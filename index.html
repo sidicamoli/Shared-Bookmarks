@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shared Bookmarks</title>
+</head>
+<body>
+  <h1>Shared Bookmarks</h1>
+
+  <!-- User selection -->
+  <label for="user-select">Choose a user:</label>
+  <select id="user-select">
+    <option disabled selected>Select a user</option>
+  </select>
+
+  <!-- Bookmark list -->
+  <h2>Bookmarks</h2>
+  <div id="bookmark-list" aria-live="polite"></div>
+
+  <!-- Add new bookmark -->
+  <h2>Add a new bookmark</h2>
+  <form id="bookmark-form">
+    <input type="url" id="url" placeholder="Bookmark URL" required />
+    <input type="text" id="title" placeholder="Bookmark Title" required />
+    <textarea id="description" placeholder="Bookmark Description" required></textarea>
+    <button type="submit">Add Bookmark</button>
+  </form>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
