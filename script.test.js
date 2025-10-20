@@ -1,5 +1,5 @@
 // script.test.js
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect } from 'vitest';
 
 describe('bookmark sorting', () => {
   it('sorts bookmarks in reverse chronological order', () => {
