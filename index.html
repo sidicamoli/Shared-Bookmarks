@@ -4,13 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shared Bookmarks</title>
+  <style>
+    /* Minimal accessibility styles - for focus indicators only */
+    :focus {
+      outline: 2px solid #0066cc;
+      outline-offset: 2px;
+    }
+    
+    .help-text {
+      font-size: 0.875rem;
+      color: #666;
+    }
+  </style>
 </head>
 <body>
   <h1>Shared Bookmarks</h1>
 
   <!-- User selection -->
   <label for="user-select">Choose a user:</label>
-  <select id="user-select">
+  <select id="user-select" aria-label="Select a user to view their bookmarks">
     <option disabled selected>Select a user</option>
   </select>
 
@@ -21,9 +33,41 @@
   <!-- Add new bookmark -->
   <h2>Add a new bookmark</h2>
   <form id="bookmark-form">
-    <input type="url" id="url" placeholder="Bookmark URL" required />
-    <input type="text" id="title" placeholder="Bookmark Title" required />
-    <textarea id="description" placeholder="Bookmark Description" required></textarea>
+    <div>
+      <label for="url">Bookmark URL *</label>
+      <input 
+        type="url" 
+        id="url" 
+        name="url"
+        placeholder="https://example.com" 
+        required 
+        aria-describedby="url-help"
+      />
+      <span id="url-help" class="help-text">Enter a valid URL starting with http:// or https://</span>
+    </div>
+
+    <div>
+      <label for="title">Bookmark Title *</label>
+      <input 
+        type="text" 
+        id="title" 
+        name="title"
+        placeholder="My Favorite Article" 
+        required 
+      />
+    </div>
+
+    <div>
+      <label for="description">Description *</label>
+      <textarea 
+        id="description" 
+        name="description"
+        placeholder="Why is this bookmark useful?" 
+        required
+        rows="4"
+      ></textarea>
+    </div>
+
     <button type="submit">Add Bookmark</button>
   </form>
 

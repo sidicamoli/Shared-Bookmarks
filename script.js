@@ -4,8 +4,10 @@
 // Note that when running locally, in order to open a web page which uses modules, you must serve the directory over HTTP e.g. with https://www.npmjs.com/package/http-server
 // You can't open the index.html file using a file:// URL.
 
+// Import storage functions
 import { getUserIds, getData, setData } from './storage.js';
 
+// Get DOM elements
 const userSelect = document.getElementById('user-select');
 const bookmarkList = document.getElementById('bookmark-list');
 const form = document.getElementById('bookmark-form');
@@ -15,7 +17,7 @@ const descriptionInput = document.getElementById('description');
 
 let currentUser = null;
 
-// Populate dropdown
+// Populate dropdown with users
 function populateUserDropdown() {
   const users = getUserIds();
   users.forEach((id) => {
@@ -26,13 +28,14 @@ function populateUserDropdown() {
   });
 }
 
-// Sort and render bookmarks
+// Sort and render bookmarks (exported for testing)
 export function showBookmarks(userId) {
-  const bookmarks = getData(userId);
+  const bookmarks = getData(userId) || []; // FIX: Handle null data
   bookmarkList.innerHTML = '';
 
   if (bookmarks.length === 0) {
-    bookmarkList.textContent = 'No bookmarks found.';
+    // IMPROVED: Better empty state message
+    bookmarkList.innerHTML = '<p><strong>No bookmarks yet.</strong> Add your first bookmark using the form below!</p>';
     return;
   }
 
@@ -47,9 +50,12 @@ export function showBookmarks(userId) {
       link.href = bookmark.url;
       link.textContent = bookmark.title;
       link.target = '_blank';
+      link.rel = 'noopener noreferrer'; // ADDED: Security improvement
 
+      // IMPROVED: Better date formatting
       const time = document.createElement('small');
-      time.textContent = ` (${new Date(bookmark.createdAt).toLocaleString()})`;
+      const date = new Date(bookmark.createdAt);
+      time.textContent = ` (${date.toLocaleDateString()} at ${date.toLocaleTimeString()})`;
 
       const desc = document.createElement('p');
       desc.textContent = bookmark.description;
@@ -64,7 +70,16 @@ export function showBookmarks(userId) {
 // Handle form submission
 function handleFormSubmit(event) {
   event.preventDefault();
-  if (!currentUser) return;
+  
+  // IMPROVED: Check if user is selected
+  if (!currentUser) {
+    alert('Please select a user first');
+    return;
+  }
+
+  // IMPROVED: Disable button during submission
+  const submitBtn = form.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
 
   const newBookmark = {
     url: urlInput.value,
@@ -73,12 +88,15 @@ function handleFormSubmit(event) {
     createdAt: new Date().toISOString(),
   };
 
-  const existing = getData(currentUser);
+  const existing = getData(currentUser) || []; // FIX: Handle null data
   existing.push(newBookmark);
   setData(currentUser, existing);
 
   form.reset();
   showBookmarks(currentUser);
+  
+  // Re-enable button
+  submitBtn.disabled = false;
 }
 
 // Handle user selection
@@ -87,6 +105,15 @@ userSelect.addEventListener('change', () => {
   showBookmarks(currentUser);
 });
 
+// Listen for form submission
 form.addEventListener('submit', handleFormSubmit);
 
+// Initialize the app
 populateUserDropdown();
+
+// NEW: Auto-select first user on page load
+if (userSelect.options.length > 1) {
+  userSelect.selectedIndex = 1; // Select first user (skip the disabled option)
+  currentUser = userSelect.value;
+  showBookmarks(currentUser);
+}
