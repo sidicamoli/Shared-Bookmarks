@@ -5,22 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shared Bookmarks</title>
   <style>
-    /* Minimal accessibility styles - for focus indicators only */
-    :focus {
-      outline: 2px solid #0066cc;
-      outline-offset: 2px;
-    }
-    
-    .help-text {
-      font-size: 0.875rem;
-      color: #666;
-    }
-  </style>
+  /* Accessibility focus outline */
+  :focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  h1, h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  select, input, textarea, button {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  button {
+    width: auto;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    background: #f9f9f9;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    border-radius: 5px;
+  }
+
+  a {
+    font-weight: bold;
+    color: #0044cc;
+  }
+
+  a:hover, a:focus {
+    text-decoration: underline;
+  }
+
+  small {
+    color: #555;
+  }
+
+  .help-text {
+    font-size: 0.875rem;
+    color: #666;
+  }
+</style>
 </head>
 <body>
   <h1>Shared Bookmarks</h1>
 
-  <!-- User selection -->
+    <!-- User selection -->
   <label for="user-select">Choose a user:</label>
   <select id="user-select" aria-label="Select a user to view their bookmarks">
     <option disabled selected>Select a user</option>
