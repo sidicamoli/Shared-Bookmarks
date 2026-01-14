@@ -6,80 +6,73 @@
 
 // Import storage functions
 import { getUserIds, getData, setData } from './storage.js';
+import { sortBookmarksByDate } from "./utils.js";
 
 // Get DOM elements
-const userSelect = document.getElementById('user-select');
-const bookmarkList = document.getElementById('bookmark-list');
-const form = document.getElementById('bookmark-form');
-const urlInput = document.getElementById('url');
-const titleInput = document.getElementById('title');
-const descriptionInput = document.getElementById('description');
+const userSelect = document.getElementById("user-select");
+const bookmarkList = document.getElementById("bookmark-list");
+const form = document.getElementById("bookmark-form");
+const urlInput = document.getElementById("url");
+const titleInput = document.getElementById("title");
+const descriptionInput = document.getElementById("description");
 
 let currentUser = null;
 
-// Populate dropdown with users
+// Populate user dropdown
 function populateUserDropdown() {
-  const users = getUserIds();
-  users.forEach((id) => {
-    const option = document.createElement('option');
+  getUserIds().forEach((id) => {
+    const option = document.createElement("option");
     option.value = id;
     option.textContent = `User ${id}`;
     userSelect.appendChild(option);
   });
 }
 
-// Sort and render bookmarks (exported for testing)
-export function showBookmarks(userId) {
-  const bookmarks = getData(userId) || []; // FIX: Handle null data
-  bookmarkList.innerHTML = '';
+// Display bookmarks
+function showBookmarks(userId) {
+  const data = getData(userId) || [];
+  bookmarkList.innerHTML = "";
 
-  if (bookmarks.length === 0) {
-    // IMPROVED: Better empty state message
-    bookmarkList.innerHTML = '<p><strong>No bookmarks yet.</strong> Add your first bookmark using the form below!</p>';
+  if (data.length === 0) {
+    bookmarkList.innerHTML = "<li>No bookmarks yet</li>";
     return;
   }
 
-  const list = document.createElement('ul');
+  const sorted = sortBookmarksByDate(data);
 
-  bookmarks
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .forEach((bookmark) => {
-      const li = document.createElement('li');
+  sorted.forEach((bookmark) => {
+    const li = document.createElement("li");
 
-      const link = document.createElement('a');
-      link.href = bookmark.url;
-      link.textContent = bookmark.title;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer'; // ADDED: Security improvement
+    const link = document.createElement("a");
+    link.href = bookmark.url;
+    link.textContent = bookmark.title;
+    link.target = "_blank";
 
-      // IMPROVED: Better date formatting
-      const time = document.createElement('small');
-      const date = new Date(bookmark.createdAt);
-      time.textContent = ` (${date.toLocaleDateString()} at ${date.toLocaleTimeString()})`;
+    const desc = document.createElement("p");
+    desc.textContent = bookmark.description;
 
-      const desc = document.createElement('p');
-      desc.textContent = bookmark.description;
+    const date = document.createElement("small");
+    date.textContent = new Date(bookmark.createdAt).toLocaleString();
 
-      li.append(link, time, desc);
-      list.appendChild(li);
-    });
-
-  bookmarkList.appendChild(list);
+    li.append(link, desc, date);
+    bookmarkList.appendChild(li);
+  });
 }
 
-// Handle form submission
-function handleFormSubmit(event) {
-  event.preventDefault();
-  
-  // IMPROVED: Check if user is selected
-  if (!currentUser) {
-    alert('Please select a user first');
-    return;
-  }
+// Handle user selection
+userSelect.addEventListener("change", (e) => {
+  currentUser = e.target.value;
+  showBookmarks(currentUser);
+});
 
-  // IMPROVED: Disable button during submission
-  const submitBtn = form.querySelector('button[type="submit"]');
-  submitBtn.disabled = true;
+// Handle form submit
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  if (!currentUser) {
+    alert("Please select a user first");
+    return;
+  };
 
   const newBookmark = {
     url: urlInput.value,
@@ -88,32 +81,17 @@ function handleFormSubmit(event) {
     createdAt: new Date().toISOString(),
   };
 
-  const existing = getData(currentUser) || []; // FIX: Handle null data
+  const existing = getData(currentUser) || [];
   existing.push(newBookmark);
   setData(currentUser, existing);
 
   form.reset();
   showBookmarks(currentUser);
-  
-  // Re-enable button
-  submitBtn.disabled = false;
-}
-
-// Handle user selection
-userSelect.addEventListener('change', () => {
-  currentUser = userSelect.value;
-  showBookmarks(currentUser);
 });
 
-// Listen for form submission
-form.addEventListener('submit', handleFormSubmit);
-
-// Initialize the app
+// Init
 populateUserDropdown();
-
-// NEW: Auto-select first user on page load
-if (userSelect.options.length > 1) {
-  userSelect.selectedIndex = 1; // Select first user (skip the disabled option)
+if (userSelect.value) {
   currentUser = userSelect.value;
   showBookmarks(currentUser);
 }

@@ -1,0 +1,32 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+section {
+  margin-bottom: 24px;
+}
+
+label {
+  display: block;
+  margin-top: 8px;
+}
+
+input,
+textarea,
+select,
+button {
+  display: block;
+  width: 100%;
+  max-width: 350px;
+  margin-bottom: 12px;
+  padding: 8px;
+  font-size: 14px;
+}
+
+button {
+  cursor: pointer;
+}
+
+#bookmark-list li {
+  margin-bottom: 16px;
+}

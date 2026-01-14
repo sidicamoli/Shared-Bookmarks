@@ -2,14 +2,9 @@
   "name": "shared-bookmarks-project",
   "version": "1.0.0",
   "type": "module",
-  "description": "Bookmark sharing project",
-  "main": "script.js",
   "scripts": {
     "test": "vitest run"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "vitest": "^0.34.6"
   }
