@@ -5,12 +5,12 @@
 // You can't open the index.html file using a file:// URL.
 
 // Import storage functions
-import { getUserIds, getData, setData } from './storage.js';
+import { getUserIds, getData, setData } from "./storage.js";
 import { sortBookmarksByDate } from "./utils.js";
 
-// Get DOM elements
-const userSelect = document.getElementById("user-select");
-const bookmarkList = document.getElementById("bookmark-list");
+// DOM elements (MATCH HTML IDS)
+const userSelect = document.getElementById("user");
+const bookmarkList = document.getElementById("book-mark");
 const form = document.getElementById("bookmark-form");
 const urlInput = document.getElementById("url");
 const titleInput = document.getElementById("title");
@@ -28,7 +28,7 @@ function populateUserDropdown() {
   });
 }
 
-// Display bookmarks
+// Display bookmarks for selected user
 function showBookmarks(userId) {
   const data = getData(userId) || [];
   bookmarkList.innerHTML = "";
@@ -59,9 +59,17 @@ function showBookmarks(userId) {
   });
 }
 
-// Handle user selection
-userSelect.addEventListener("change", (e) => {
-  currentUser = e.target.value;
+// Handle user selection (ALLOW going back to "Select a user")
+userSelect.addEventListener("change", () => {
+  const selectedUser = userSelect.value;
+
+  if (selectedUser === "") {
+    currentUser = null;
+    bookmarkList.innerHTML = "";
+    return;
+  }
+
+  currentUser = selectedUser;
   showBookmarks(currentUser);
 });
 
@@ -72,7 +80,7 @@ form.addEventListener("submit", (e) => {
   if (!currentUser) {
     alert("Please select a user first");
     return;
-  };
+  }
 
   const newBookmark = {
     url: urlInput.value,
@@ -91,7 +99,3 @@ form.addEventListener("submit", (e) => {
 
 // Init
 populateUserDropdown();
-if (userSelect.value) {
-  currentUser = userSelect.value;
-  showBookmarks(currentUser);
-}
