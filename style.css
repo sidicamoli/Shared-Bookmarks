@@ -2,15 +2,19 @@ body {
   font-family: Arial, sans-serif;
 }
 
+/* Space between main sections */
 section {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
+/* Form labels */
 label {
   display: block;
   margin-top: 8px;
+  margin-bottom: 4px;
 }
 
+/* Inputs and buttons */
 input,
 textarea,
 select,
@@ -23,8 +27,15 @@ button {
   font-size: 14px;
 }
 
+/* Button interaction */
 button {
   cursor: pointer;
+}
+
+/* Bookmarks list spacing */
+#bookmark-list {
+  margin-top: 16px;
+  padding-left: 20px;
 }
 
 #bookmark-list li {

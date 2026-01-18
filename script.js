@@ -8,17 +8,17 @@
 import { getUserIds, getData, setData } from "./storage.js";
 import { sortBookmarksByDate } from "./utils.js";
 
-// DOM elements (MATCH HTML IDS)
+/* DOM elements (MATCH HTML) */
 const userSelect = document.getElementById("user");
-const bookmarkList = document.getElementById("book-mark");
+const bookmarkList = document.getElementById("bookmark-list");
 const form = document.getElementById("bookmark-form");
 const urlInput = document.getElementById("url");
 const titleInput = document.getElementById("title");
 const descriptionInput = document.getElementById("description");
 
-let currentUser = null;
+let currentUser = "";
 
-// Populate user dropdown
+/* Populate dropdown */
 function populateUserDropdown() {
   getUserIds().forEach((id) => {
     const option = document.createElement("option");
@@ -28,10 +28,16 @@ function populateUserDropdown() {
   });
 }
 
-// Display bookmarks for selected user
+/* Show bookmarks for selected user */
 function showBookmarks(userId) {
-  const data = getData(userId) || [];
   bookmarkList.innerHTML = "";
+
+  // ✅ IMPORTANT FIX: if no user selected, show nothing
+  if (!userId) {
+    return;
+  }
+
+  const data = getData(userId) || [];
 
   if (data.length === 0) {
     bookmarkList.innerHTML = "<li>No bookmarks yet</li>";
@@ -52,28 +58,20 @@ function showBookmarks(userId) {
     desc.textContent = bookmark.description;
 
     const date = document.createElement("small");
-    date.textContent = new Date(bookmark.timestamp).toLocaleString();
+    date.textContent = new Date(bookmark.createdAt).toLocaleString();
 
     li.append(link, desc, date);
     bookmarkList.appendChild(li);
   });
 }
 
-// Handle user selection (ALLOW going back to "Select a user")
+/* Handle user change */
 userSelect.addEventListener("change", () => {
-  const selectedUser = userSelect.value;
-
-  if (selectedUser === "") {
-    currentUser = null;
-    bookmarkList.innerHTML = "";
-    return;
-  }
-
-  currentUser = selectedUser;
+  currentUser = userSelect.value;
   showBookmarks(currentUser);
 });
 
-// Handle form submit
+/* Handle form submit */
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -86,7 +84,7 @@ form.addEventListener("submit", (e) => {
     url: urlInput.value,
     title: titleInput.value,
     description: descriptionInput.value,
-    timestamp: Date.now(),
+    createdAt: new Date().toISOString(),
   };
 
   const existing = getData(currentUser) || [];
@@ -97,5 +95,5 @@ form.addEventListener("submit", (e) => {
   showBookmarks(currentUser);
 });
 
-// Init
+/* Init */
 populateUserDropdown();
