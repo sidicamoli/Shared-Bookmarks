@@ -52,7 +52,7 @@ function showBookmarks(userId) {
     desc.textContent = bookmark.description;
 
     const date = document.createElement("small");
-    date.textContent = new Date(bookmark.createdAt).toLocaleString();
+    date.textContent = new Date(bookmark.timestamp).toLocaleString();
 
     li.append(link, desc, date);
     bookmarkList.appendChild(li);
@@ -86,7 +86,7 @@ form.addEventListener("submit", (e) => {
     url: urlInput.value,
     title: titleInput.value,
     description: descriptionInput.value,
-    createdAt: new Date().toISOString(),
+    timestamp: Date.now(),
   };
 
   const existing = getData(currentUser) || [];
